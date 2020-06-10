@@ -36,14 +36,15 @@ Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 
-router.beforeEach((to,from,next)=>{
-  console.log(to)
-  console.log(from)
-  console.log(next)
-  //每次路由跳转会判断用户是否登录
-  //如果已登录则会放行
-  //如果未登录则直接跳转到登录页
-});
+// router.beforeEach((to,from,next)=>{
+//   console.log(to)
+//   console.log(from)
+//   console.log(next)
+//   //每次路由跳转会判断用户是否登录
+//   //如果已登录则会放行
+//   //如果未登录则直接跳转到登录页
+//   next()
+// });
 
 new Vue({
   router,
