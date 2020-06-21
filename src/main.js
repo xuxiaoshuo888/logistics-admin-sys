@@ -2,11 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-// import axios from './axios'
+import request from './axios'
 import ElementUI from 'element-ui'
 
 import 'element-ui/lib/theme-chalk/index.css';
 
+Vue.prototype.request = request
 // const requireComponent = require.context(
 //   // 其组件目录的相对路径
 //   './components',

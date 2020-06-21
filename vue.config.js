@@ -1,4 +1,4 @@
-const target = 'http://192.168.0.184:8050';
+const target = 'http://129.204.106.247:8000';
 module.exports = {
     // 基本路径
     publicPath: '/',
@@ -12,6 +12,7 @@ module.exports = {
         }
     },
     devServer: {
+        open: true,
         port: 8888,
         disableHostCheck: true,
         proxy: {
@@ -23,5 +24,6 @@ module.exports = {
                 }
             },
         }
-    }
+    },
+    lintOnSave: false // 取消 eslint 验证
 };
