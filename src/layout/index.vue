@@ -277,14 +277,105 @@
                 </div>
 
                 <el-dialog
-                        title="提示"
+                        title="修改订单"
                         :visible.sync="dialogVisible"
                         width="70%"
                         :before-close="handleClose">
-                    <span>这是一段信息</span>
-                    <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                    <div class="dialog-content">
+                        <el-form ref="form" :model="form" label-width="100px">
+                            <el-row :gutter="20">
+                                <el-col :span="12">
+                                    <!--
+                                      order_number: '',//	订单号
+                                                        consigner: '',//	发货人
+                                                        consigner_phone: '',// 发货人电话
+                                                        delivery_province: '',// 发货省
+                                                        delivery_city: '',//		发货市
+                                                        delivery_district: '',//	发货区
+                                                        delivery_address: '',//	发货地址
+                                                        consignee: '',//		收货人
+                                                        consignee_phone: '',//收货人电话
+                                                        receipt_province: '',//	收货省
+                                                        receipt_city: '',//	收货市
+                                                        receipt_district: '',//	收货区
+                                                        receipt_address: '',//	收货地址
+                                                        furniture_category: '',//家具类别
+                                                        goods_number: '',//	货物件数
+                                                        goods_volume: '',//   货物体积
+                                                        transport_prices: '',//运输价格
+                                                        delivery_method: '',//	送货方式
+                                                        pay_method: '',//	付款方式
+                                    -->
+                                    <el-form-item label="订单号">
+                                        <el-input v-model="form.order_number" disabled></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="发货人">
+                                        <el-input v-model="form.consigner"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="发货人电话">
+                                        <el-input v-model="form.consigner_phone" type="number"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="发货省市区">
+                                        <el-cascader
+                                                v-model="value"
+                                                :options="options"
+                                                @change="handleChange"></el-cascader>
+                                    </el-form-item>
+                                    <el-form-item label="发货地址">
+                                        <el-input type="textarea" v-model="form.delivery_address"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="收货人">
+                                        <el-input v-model="form.consignee"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="收货人电话">
+                                        <el-input v-model="form.consignee_phone" type="number"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="收货省市区">
+                                        <!--                                        <el-input v-model="form.order_number"></el-input>-->
+                                    </el-form-item>
+                                    <el-form-item label="收货地址">
+                                        <el-input type="textarea" v-model="form.receipt_address"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="家具类别">
+                                        <el-checkbox-group v-model="form.furniture_category">
+                                            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                                            <el-checkbox label="地推活动" name="type"></el-checkbox>
+                                            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                                            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+                                        </el-checkbox-group>
+                                    </el-form-item>
+                                    <el-form-item label="货物件数">
+                                        <el-input-number v-model="form.goods_number" @change="handleChange" :min="1"
+                                                         label="描述文字"></el-input-number>
+                                    </el-form-item>
+                                    <el-form-item label="货物体积(m³)">
+                                        <el-input-number v-model="form.goods_volume" @change="handleChange" :min="0.1"
+                                                         :step="0.1" label="描述文字"></el-input-number>
+                                    </el-form-item>
+                                    <el-form-item label="运输价格">
+                                        <el-input type="textarea" v-model="form.transport_prices"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="送货方式">
+                                        <el-select v-model="form.delivery_method" placeholder="送货方式">
+                                            <el-option v-for="(item,index) in deli_method_list" :label="item.name"
+                                                       :value="item.val" :key="index"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="付款方式">
+                                        <el-select v-model="form.pay_method" placeholder="送货方式">
+                                            <el-option v-for="(item,index) in pay_method_list" :label="item.name"
+                                                       :value="item.val" :key="index"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                    </div>
+                    <span slot="footer" class="dialog-footer" style="text-align: center">
+            <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false" size="small">提交修改</el-button>
           </span>
                 </el-dialog>
             </el-main>
@@ -317,6 +408,234 @@
                 start: '',//开始
                 end: '',//结束
                 count: '',//总条数
+                deli_method_list: [
+                    {name: '自提', val: '1'},
+                    {name: '送货到楼下', val: '2'},
+                    {name: '送货到家', val: '3'},
+                    {name: '送货并安装', val: '4'}
+                ],
+                pay_method_list: [
+                    {name: '现付', val: '1'},
+                    {name: '转账', val: '2'},
+                    {name: '到付', val: '3'}
+                ],
+                form: {
+                    order_number: '',//	订单号
+                    consigner: '',//	发货人
+                    consigner_phone: '',// 发货人电话
+                    delivery_province: '',// 发货省
+                    delivery_city: '',//		发货市
+                    delivery_district: '',//	发货区
+                    delivery_address: '',//	发货地址
+                    consignee: '',//		收货人
+                    consignee_phone: '',//收货人电话
+                    receipt_province: '',//	收货省
+                    receipt_city: '',//	收货市
+                    receipt_district: '',//	收货区
+                    receipt_address: '',//	收货地址
+                    furniture_category: '',//家具类别
+                    goods_number: '',//	货物件数
+                    goods_volume: '',//   货物体积
+                    transport_prices: '',//运输价格
+                    delivery_method: '',//	送货方式
+                    pay_method: '',//	付款方式
+                },
+                value: [],
+                options: [{
+                    value: 'zhinan',
+                    label: '指南',
+                    children: [{
+                        value: 'shejiyuanze',
+                        label: '设计原则',
+                        children: [{
+                            value: 'yizhi',
+                            label: '一致'
+                        }, {
+                            value: 'fankui',
+                            label: '反馈'
+                        }, {
+                            value: 'xiaolv',
+                            label: '效率'
+                        }, {
+                            value: 'kekong',
+                            label: '可控'
+                        }]
+                    }, {
+                        value: 'daohang',
+                        label: '导航',
+                        children: [{
+                            value: 'cexiangdaohang',
+                            label: '侧向导航'
+                        }, {
+                            value: 'dingbudaohang',
+                            label: '顶部导航'
+                        }]
+                    }]
+                }, {
+                    value: 'zujian',
+                    label: '组件',
+                    children: [{
+                        value: 'basic',
+                        label: 'Basic',
+                        children: [{
+                            value: 'layout',
+                            label: 'Layout 布局'
+                        }, {
+                            value: 'color',
+                            label: 'Color 色彩'
+                        }, {
+                            value: 'typography',
+                            label: 'Typography 字体'
+                        }, {
+                            value: 'icon',
+                            label: 'Icon 图标'
+                        }, {
+                            value: 'button',
+                            label: 'Button 按钮'
+                        }]
+                    }, {
+                        value: 'form',
+                        label: 'Form',
+                        children: [{
+                            value: 'radio',
+                            label: 'Radio 单选框'
+                        }, {
+                            value: 'checkbox',
+                            label: 'Checkbox 多选框'
+                        }, {
+                            value: 'input',
+                            label: 'Input 输入框'
+                        }, {
+                            value: 'input-number',
+                            label: 'InputNumber 计数器'
+                        }, {
+                            value: 'select',
+                            label: 'Select 选择器'
+                        }, {
+                            value: 'cascader',
+                            label: 'Cascader 级联选择器'
+                        }, {
+                            value: 'switch',
+                            label: 'Switch 开关'
+                        }, {
+                            value: 'slider',
+                            label: 'Slider 滑块'
+                        }, {
+                            value: 'time-picker',
+                            label: 'TimePicker 时间选择器'
+                        }, {
+                            value: 'date-picker',
+                            label: 'DatePicker 日期选择器'
+                        }, {
+                            value: 'datetime-picker',
+                            label: 'DateTimePicker 日期时间选择器'
+                        }, {
+                            value: 'upload',
+                            label: 'Upload 上传'
+                        }, {
+                            value: 'rate',
+                            label: 'Rate 评分'
+                        }, {
+                            value: 'form',
+                            label: 'Form 表单'
+                        }]
+                    }, {
+                        value: 'data',
+                        label: 'Data',
+                        children: [{
+                            value: 'table',
+                            label: 'Table 表格'
+                        }, {
+                            value: 'tag',
+                            label: 'Tag 标签'
+                        }, {
+                            value: 'progress',
+                            label: 'Progress 进度条'
+                        }, {
+                            value: 'tree',
+                            label: 'Tree 树形控件'
+                        }, {
+                            value: 'pagination',
+                            label: 'Pagination 分页'
+                        }, {
+                            value: 'badge',
+                            label: 'Badge 标记'
+                        }]
+                    }, {
+                        value: 'notice',
+                        label: 'Notice',
+                        children: [{
+                            value: 'alert',
+                            label: 'Alert 警告'
+                        }, {
+                            value: 'loading',
+                            label: 'Loading 加载'
+                        }, {
+                            value: 'message',
+                            label: 'Message 消息提示'
+                        }, {
+                            value: 'message-box',
+                            label: 'MessageBox 弹框'
+                        }, {
+                            value: 'notification',
+                            label: 'Notification 通知'
+                        }]
+                    }, {
+                        value: 'navigation',
+                        label: 'Navigation',
+                        children: [{
+                            value: 'menu',
+                            label: 'NavMenu 导航菜单'
+                        }, {
+                            value: 'tabs',
+                            label: 'Tabs 标签页'
+                        }, {
+                            value: 'breadcrumb',
+                            label: 'Breadcrumb 面包屑'
+                        }, {
+                            value: 'dropdown',
+                            label: 'Dropdown 下拉菜单'
+                        }, {
+                            value: 'steps',
+                            label: 'Steps 步骤条'
+                        }]
+                    }, {
+                        value: 'others',
+                        label: 'Others',
+                        children: [{
+                            value: 'dialog',
+                            label: 'Dialog 对话框'
+                        }, {
+                            value: 'tooltip',
+                            label: 'Tooltip 文字提示'
+                        }, {
+                            value: 'popover',
+                            label: 'Popover 弹出框'
+                        }, {
+                            value: 'card',
+                            label: 'Card 卡片'
+                        }, {
+                            value: 'carousel',
+                            label: 'Carousel 走马灯'
+                        }, {
+                            value: 'collapse',
+                            label: 'Collapse 折叠面板'
+                        }]
+                    }]
+                }, {
+                    value: 'ziyuan',
+                    label: '资源',
+                    children: [{
+                        value: 'axure',
+                        label: 'Axure Components'
+                    }, {
+                        value: 'sketch',
+                        label: 'Sketch Templates'
+                    }, {
+                        value: 'jiaohu',
+                        label: '组件交互文档'
+                    }]
+                }]
             }
         },
         mounted() {
@@ -379,7 +698,7 @@
                                 message: '删除成功!'
                             });
                             this.search();
-                        }else{
+                        } else {
                             this.$message({
                                 type: 'error',
                                 message: res.data.data
@@ -396,7 +715,7 @@
             },
             edit(e) {
                 console.log(e)
-
+                this.dialogVisible = true
             }
 
         }
