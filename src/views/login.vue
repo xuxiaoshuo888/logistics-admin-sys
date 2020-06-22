@@ -25,7 +25,7 @@
                         </el-input>
                     </el-form-item>
                     <el-button type="primary" class='login-btn' @click="login">登录</el-button>
-                    <div class="login-notice" @click="flag='regist'">还没账号？</div>
+                    <!--<div class="login-notice" @click="flag='regist'">还没账号？</div>-->
                 </el-form>
             </div>
             <div class="form-div" v-else>

@@ -1,4 +1,4 @@
-const target = 'http://129.204.106.247:8000';
+const target = 'http://129.204.106.247:12331';//测试地址
 module.exports = {
     // 基本路径
     publicPath: '/',

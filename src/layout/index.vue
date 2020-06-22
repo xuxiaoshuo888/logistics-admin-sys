@@ -57,6 +57,7 @@
                             <el-input
                                     placeholder="请输入用户的手机号"
                                     v-model="user_phone"
+                                    type="tel"
                                     size="small"
                                     clearable>
                             </el-input>
@@ -279,33 +280,12 @@
                 <el-dialog
                         title="修改订单"
                         :visible.sync="dialogVisible"
-                        width="70%"
+                        width="80%"
                         :before-close="handleClose">
                     <div class="dialog-content">
                         <el-form ref="form" :model="form" label-width="100px">
                             <el-row :gutter="20">
                                 <el-col :span="12">
-                                    <!--
-                                      order_number: '',//	订单号
-                                                        consigner: '',//	发货人
-                                                        consigner_phone: '',// 发货人电话
-                                                        delivery_province: '',// 发货省
-                                                        delivery_city: '',//		发货市
-                                                        delivery_district: '',//	发货区
-                                                        delivery_address: '',//	发货地址
-                                                        consignee: '',//		收货人
-                                                        consignee_phone: '',//收货人电话
-                                                        receipt_province: '',//	收货省
-                                                        receipt_city: '',//	收货市
-                                                        receipt_district: '',//	收货区
-                                                        receipt_address: '',//	收货地址
-                                                        furniture_category: '',//家具类别
-                                                        goods_number: '',//	货物件数
-                                                        goods_volume: '',//   货物体积
-                                                        transport_prices: '',//运输价格
-                                                        delivery_method: '',//	送货方式
-                                                        pay_method: '',//	付款方式
-                                    -->
                                     <el-form-item label="订单号">
                                         <el-input v-model="form.order_number" disabled></el-input>
                                     </el-form-item>
@@ -317,9 +297,10 @@
                                     </el-form-item>
                                     <el-form-item label="发货省市区">
                                         <el-cascader
-                                                v-model="value"
-                                                :options="options"
-                                                @change="handleChange"></el-cascader>
+                                                style="width: 100%;"
+                                                v-model="value_fhd"
+                                                :options="list"
+                                                @change="handleChange_fhd"></el-cascader>
                                     </el-form-item>
                                     <el-form-item label="发货地址">
                                         <el-input type="textarea" v-model="form.delivery_address"></el-input>
@@ -331,6 +312,11 @@
                                         <el-input v-model="form.consignee_phone" type="number"></el-input>
                                     </el-form-item>
                                     <el-form-item label="收货省市区">
+                                        <el-cascader
+                                                style="width: 100%;"
+                                                v-model="value_shd"
+                                                :options="list"
+                                                @change="handleChange_shd"></el-cascader>
                                         <!--                                        <el-input v-model="form.order_number"></el-input>-->
                                     </el-form-item>
                                     <el-form-item label="收货地址">
@@ -381,345 +367,206 @@
             </el-main>
         </el-container>
     </el-container>
-
-
 </template>
 
 <script>
-    export default {
-        name: "layout",
-        data() {
-            return {
-                order_number: '',//	根据订单号查询
-                order_state: '',//	根据订单状态查询   1:已下单  2:已提货  3:已完成  4:已取消
-                user_phone: '',//	根据用户的手机号查询
-                gte: '',//	查询大于等于该日期的订单   格式:”2020/05/18”
-                lte: '',//	查询小于等于该日期的订单   格式同gte
-                consigner_phone: '',//	根据发货人手机查询订单
-                delivery_province: '',//根据发货省查询订单
-                delivery_city: '',//	根据发货市查询订单
-                deliver_county: '',//根据发货区查询订单
-                consignee_phone: '',//	根据收货人手机查询订单
-                receipt_province: '',//	根据收货省查询订单
-                receipt_city: '',//	根据收货市查询订单
-                receipt_county: '',//	根据收货区查询订单
-                tableData: [],
-                dialogVisible: true,
-                start: '',//开始
-                end: '',//结束
-                count: '',//总条数
-                deli_method_list: [
-                    {name: '自提', val: '1'},
-                    {name: '送货到楼下', val: '2'},
-                    {name: '送货到家', val: '3'},
-                    {name: '送货并安装', val: '4'}
-                ],
-                pay_method_list: [
-                    {name: '现付', val: '1'},
-                    {name: '转账', val: '2'},
-                    {name: '到付', val: '3'}
-                ],
-                form: {
-                    order_number: '',//	订单号
-                    consigner: '',//	发货人
-                    consigner_phone: '',// 发货人电话
-                    delivery_province: '',// 发货省
-                    delivery_city: '',//		发货市
-                    delivery_district: '',//	发货区
-                    delivery_address: '',//	发货地址
-                    consignee: '',//		收货人
-                    consignee_phone: '',//收货人电话
-                    receipt_province: '',//	收货省
-                    receipt_city: '',//	收货市
-                    receipt_district: '',//	收货区
-                    receipt_address: '',//	收货地址
-                    furniture_category: '',//家具类别
-                    goods_number: '',//	货物件数
-                    goods_volume: '',//   货物体积
-                    transport_prices: '',//运输价格
-                    delivery_method: '',//	送货方式
-                    pay_method: '',//	付款方式
-                },
-                value: [],
-                options: [{
-                    value: 'zhinan',
-                    label: '指南',
-                    children: [{
-                        value: 'shejiyuanze',
-                        label: '设计原则',
-                        children: [{
-                            value: 'yizhi',
-                            label: '一致'
-                        }, {
-                            value: 'fankui',
-                            label: '反馈'
-                        }, {
-                            value: 'xiaolv',
-                            label: '效率'
-                        }, {
-                            value: 'kekong',
-                            label: '可控'
-                        }]
-                    }, {
-                        value: 'daohang',
-                        label: '导航',
-                        children: [{
-                            value: 'cexiangdaohang',
-                            label: '侧向导航'
-                        }, {
-                            value: 'dingbudaohang',
-                            label: '顶部导航'
-                        }]
-                    }]
-                }, {
-                    value: 'zujian',
-                    label: '组件',
-                    children: [{
-                        value: 'basic',
-                        label: 'Basic',
-                        children: [{
-                            value: 'layout',
-                            label: 'Layout 布局'
-                        }, {
-                            value: 'color',
-                            label: 'Color 色彩'
-                        }, {
-                            value: 'typography',
-                            label: 'Typography 字体'
-                        }, {
-                            value: 'icon',
-                            label: 'Icon 图标'
-                        }, {
-                            value: 'button',
-                            label: 'Button 按钮'
-                        }]
-                    }, {
-                        value: 'form',
-                        label: 'Form',
-                        children: [{
-                            value: 'radio',
-                            label: 'Radio 单选框'
-                        }, {
-                            value: 'checkbox',
-                            label: 'Checkbox 多选框'
-                        }, {
-                            value: 'input',
-                            label: 'Input 输入框'
-                        }, {
-                            value: 'input-number',
-                            label: 'InputNumber 计数器'
-                        }, {
-                            value: 'select',
-                            label: 'Select 选择器'
-                        }, {
-                            value: 'cascader',
-                            label: 'Cascader 级联选择器'
-                        }, {
-                            value: 'switch',
-                            label: 'Switch 开关'
-                        }, {
-                            value: 'slider',
-                            label: 'Slider 滑块'
-                        }, {
-                            value: 'time-picker',
-                            label: 'TimePicker 时间选择器'
-                        }, {
-                            value: 'date-picker',
-                            label: 'DatePicker 日期选择器'
-                        }, {
-                            value: 'datetime-picker',
-                            label: 'DateTimePicker 日期时间选择器'
-                        }, {
-                            value: 'upload',
-                            label: 'Upload 上传'
-                        }, {
-                            value: 'rate',
-                            label: 'Rate 评分'
-                        }, {
-                            value: 'form',
-                            label: 'Form 表单'
-                        }]
-                    }, {
-                        value: 'data',
-                        label: 'Data',
-                        children: [{
-                            value: 'table',
-                            label: 'Table 表格'
-                        }, {
-                            value: 'tag',
-                            label: 'Tag 标签'
-                        }, {
-                            value: 'progress',
-                            label: 'Progress 进度条'
-                        }, {
-                            value: 'tree',
-                            label: 'Tree 树形控件'
-                        }, {
-                            value: 'pagination',
-                            label: 'Pagination 分页'
-                        }, {
-                            value: 'badge',
-                            label: 'Badge 标记'
-                        }]
-                    }, {
-                        value: 'notice',
-                        label: 'Notice',
-                        children: [{
-                            value: 'alert',
-                            label: 'Alert 警告'
-                        }, {
-                            value: 'loading',
-                            label: 'Loading 加载'
-                        }, {
-                            value: 'message',
-                            label: 'Message 消息提示'
-                        }, {
-                            value: 'message-box',
-                            label: 'MessageBox 弹框'
-                        }, {
-                            value: 'notification',
-                            label: 'Notification 通知'
-                        }]
-                    }, {
-                        value: 'navigation',
-                        label: 'Navigation',
-                        children: [{
-                            value: 'menu',
-                            label: 'NavMenu 导航菜单'
-                        }, {
-                            value: 'tabs',
-                            label: 'Tabs 标签页'
-                        }, {
-                            value: 'breadcrumb',
-                            label: 'Breadcrumb 面包屑'
-                        }, {
-                            value: 'dropdown',
-                            label: 'Dropdown 下拉菜单'
-                        }, {
-                            value: 'steps',
-                            label: 'Steps 步骤条'
-                        }]
-                    }, {
-                        value: 'others',
-                        label: 'Others',
-                        children: [{
-                            value: 'dialog',
-                            label: 'Dialog 对话框'
-                        }, {
-                            value: 'tooltip',
-                            label: 'Tooltip 文字提示'
-                        }, {
-                            value: 'popover',
-                            label: 'Popover 弹出框'
-                        }, {
-                            value: 'card',
-                            label: 'Card 卡片'
-                        }, {
-                            value: 'carousel',
-                            label: 'Carousel 走马灯'
-                        }, {
-                            value: 'collapse',
-                            label: 'Collapse 折叠面板'
-                        }]
-                    }]
-                }, {
-                    value: 'ziyuan',
-                    label: '资源',
-                    children: [{
-                        value: 'axure',
-                        label: 'Axure Components'
-                    }, {
-                        value: 'sketch',
-                        label: 'Sketch Templates'
-                    }, {
-                        value: 'jiaohu',
-                        label: '组件交互文档'
-                    }]
-                }]
-            }
-        },
-        mounted() {
-            this.search();
-        },
-        methods: {
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            logout() {
-                this.request.post('/admin/logout/', {}).then(res => {
-                    //登出成功之后跳转到login
-                    debugger
-                    if (res.data.ret == 0) {
-                        this.$router.push('/login')
-                    }
-                })
-            },
-            search() {
-                let data = {
-                    order_number: '',//	根据订单号查询
-                    order_state: '',//	根据订单状态查询   1:已下单  2:已提货  3:已完成  4:已取消
-                    user_phone: '',//	根据用户的手机号查询
-                    gte: '',//	查询大于等于该日期的订单   格式:”2020/05/18”
-                    lte: '',//	查询小于等于该日期的订单   格式同gte
-                    consigner_phone: '',//	根据发货人手机查询订单
-                    delivery_province: '',//根据发货省查询订单
-                    delivery_city: '',//	根据发货市查询订单
-                    deliver_county: '',//根据发货区查询订单
-                    consignee_phone: '',//	根据收货人手机查询订单
-                    receipt_province: '',//	根据收货省查询订单
-                    receipt_city: '',//	根据收货市查询订单
-                    receipt_county: '',//	根据收货区查询订单
-                }
-                this.request.get('/admin/get/', data).then(res => {
-                    if (res.data.ret == 0) {
-                        this.tableData = res.data.data;
-                        this.start = res.data.start;
-                        this.end = res.data.end;
-                        this.count = res.data.count;
-                    } else if (res.data.ret == -1 && res.data.data == '未登录') {
-                        this.$router.push('/login')
-                    }
-                })
-            },
-            del(e) {
-                this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.request.post('/admin/delete/', {order_number: e.order_number}).then(res => {
-                        //登出成功之后跳转到login
-                        if (res.data.ret == 0) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            });
-                            this.search();
-                        } else {
-                            this.$message({
-                                type: 'error',
-                                message: res.data.data
-                            });
-                        }
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
+  import arealist from './area'
 
-            },
-            edit(e) {
-                console.log(e)
-                this.dialogVisible = true
-            }
-
+  export default {
+    name: "layout",
+    data() {
+      return {
+        arealist: arealist,
+        list: [],//
+        order_number: '',//	根据订单号查询
+        order_state: '',//	根据订单状态查询   1:已下单  2:已提货  3:已完成  4:已取消
+        user_phone: '',//	根据用户的手机号查询
+        gte: '',//	查询大于等于该日期的订单   格式:”2020/05/18”
+        lte: '',//	查询小于等于该日期的订单   格式同gte
+        consigner_phone: '',//	根据发货人手机查询订单
+        delivery_province: '',//根据发货省查询订单
+        delivery_city: '',//	根据发货市查询订单
+        deliver_county: '',//根据发货区查询订单
+        consignee_phone: '',//	根据收货人手机查询订单
+        receipt_province: '',//	根据收货省查询订单
+        receipt_city: '',//	根据收货市查询订单
+        receipt_county: '',//	根据收货区查询订单
+        tableData: [],
+        dialogVisible: true,
+        start: '',//开始
+        end: '',//结束
+        count: '',//总条数
+        deli_method_list: [
+          {name: '自提', val: '1'},
+          {name: '送货到楼下', val: '2'},
+          {name: '送货到家', val: '3'},
+          {name: '送货并安装', val: '4'}
+        ],
+        pay_method_list: [
+          {name: '现付', val: '1'},
+          {name: '转账', val: '2'},
+          {name: '到付', val: '3'}
+        ],
+        form: {
+          order_number: '',//	订单号
+          consigner: '',//	发货人
+          consigner_phone: '',// 发货人电话
+          delivery_province: '',// 发货省
+          delivery_city: '',//		发货市
+          delivery_district: '',//	发货区
+          delivery_address: '',//	发货地址
+          consignee: '',//		收货人
+          consignee_phone: '',//收货人电话
+          receipt_province: '',//	收货省
+          receipt_city: '',//	收货市
+          receipt_district: '',//	收货区
+          receipt_address: '',//	收货地址
+          furniture_category: '',//家具类别
+          goods_number: '',//	货物件数
+          goods_volume: '',//   货物体积
+          transport_prices: '',//运输价格
+          delivery_method: '',//	送货方式
+          pay_method: '',//	付款方式
+        },
+        value_fhd: '',
+        value_shd: ''
+      }
+    },
+    mounted() {
+      //处理地区数据格式
+      this.formatArealist();
+      this.search();
+    },
+    methods: {
+      handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      logout() {
+        this.request.post('/admin/logout/', {}).then(res => {
+          //登出成功之后跳转到login
+          debugger
+          if (res.data.ret == 0) {
+            this.$router.push('/login')
+          }
+        })
+      },
+      search() {
+        let data = {
+          order_number: '',//	根据订单号查询
+          order_state: '',//	根据订单状态查询   1:已下单  2:已提货  3:已完成  4:已取消
+          user_phone: '',//	根据用户的手机号查询
+          gte: '',//	查询大于等于该日期的订单   格式:”2020/05/18”
+          lte: '',//	查询小于等于该日期的订单   格式同gte
+          consigner_phone: '',//	根据发货人手机查询订单
+          delivery_province: '',//根据发货省查询订单
+          delivery_city: '',//	根据发货市查询订单
+          deliver_county: '',//根据发货区查询订单
+          consignee_phone: '',//	根据收货人手机查询订单
+          receipt_province: '',//	根据收货省查询订单
+          receipt_city: '',//	根据收货市查询订单
+          receipt_county: '',//	根据收货区查询订单
         }
+        this.request.get('/admin/get/', data).then(res => {
+          if (res.data.ret == 0) {
+            this.tableData = res.data.data;
+            this.start = res.data.start;
+            this.end = res.data.end;
+            this.count = res.data.count;
+          } else if (res.data.ret == -1 && res.data.data == '未登录') {
+            this.$router.push('/login')
+          }
+        })
+      },
+      del(e) {
+        this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.request.post('/admin/delete/', {order_number: e.order_number}).then(res => {
+            //登出成功之后跳转到login
+            if (res.data.ret == 0) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.search();
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.data
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+      },
+      edit(e) {
+        console.log(e)
+        this.dialogVisible = true
+      },
+      formatArealist() {//处理JSON数据，符合element 级联组件数据格式
+        let obj = this.arealist;
+        console.log(obj)
+        let list = [];
+        for (let key in obj) {
+          let obj_temp1 = {
+            value: key,
+            label: key,
+            children: []
+          }
+          list.push(obj_temp1)
+          for (let key_son in obj[key]) {
+            let obj_temp2 = {
+              value: key_son,
+              label: key_son,
+              children: []
+            }
+            list.forEach((item, index) => {
+              if (item.label == key) {
+                item.children.push(obj_temp2)
+              }
+            })
+            let temp_list = []
+            obj[key][key_son].forEach((qu, index) => {
+              let obj_temp3 = {
+                value: qu,
+                label: qu,
+              }
+              temp_list.push(obj_temp3)
+            })
+            list.forEach((sheng) => {
+              sheng.children.forEach((shi) => {
+                if (shi.label == key_son)
+                  shi.children = temp_list
+              })
+            })
+          }
+        }
+        this.list = list
+      },
+      handleChange_fhd(e) {//发货地地区选择器 ,['省','市','区']
+        this.form.delivery_province = e[0],// 发货省
+          this.form.delivery_city = e[1],//发货市
+          this.form.delivery_district = e[2]
+        console.log(this.form)
+      },
+      handleChange_shd(e) {//收货地地区选择器 ,['省','市','区']
+        this.form.receipt_province = e[0],// 发货省
+          this.form.receipt_city = e[1],//发货市
+          this.form.receipt_district = e[2]
+        console.log(this.form)
+      }
     }
+  }
 </script>
 
 <style scoped lang="scss">
