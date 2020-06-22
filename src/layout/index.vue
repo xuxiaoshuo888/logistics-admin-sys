@@ -392,7 +392,7 @@
         receipt_city: '',//	根据收货市查询订单
         receipt_county: '',//	根据收货区查询订单
         tableData: [],
-        dialogVisible: true,
+        dialogVisible: false,
         start: '',//开始
         end: '',//结束
         count: '',//总条数
@@ -511,7 +511,50 @@
       },
       edit(e) {
         console.log(e)
+        /*
+         order_number: '',//	订单号
+          consigner: '',//	发货人
+          consigner_phone: '',// 发货人电话
+          delivery_province: '',// 发货省
+          delivery_city: '',//		发货市
+          delivery_district: '',//	发货区
+          delivery_address: '',//	发货地址
+          consignee: '',//		收货人
+          consignee_phone: '',//收货人电话
+          receipt_province: '',//	收货省
+          receipt_city: '',//	收货市
+          receipt_district: '',//	收货区
+          receipt_address: '',//	收货地址
+          furniture_category: '',//家具类别
+          goods_number: '',//	货物件数
+          goods_volume: '',//   货物体积
+          transport_prices: '',//运输价格
+          delivery_method: '',//	送货方式
+          pay_method: '',//	付款方式
+         */
         this.dialogVisible = true
+        this.form.order_number = e.order_number;
+        this.form.order_state = e.order_state;
+        this.form.consigner = e.consigner;
+        this.form.consigner_phone = e.consigner_phone;
+        this.form.delivery_province = e.delivery_province;
+        this.form.delivery_city = e.delivery_city;
+        this.form.delivery_district = e.delivery_district;
+        this.form.delivery_address = e.delivery_address;
+        this.form.consignee = e.consignee;
+        this.form.consignee_phone = e.consignee_phone;
+        this.form.receipt_province = e.receipt_province;
+        this.form.receipt_city = e.receipt_city;
+        this.form.receipt_district = e.receipt_district;
+        this.form.receipt_address = e.receipt_address;
+        this.form.furniture_category = e.furniture_category;
+        this.form.goods_number = e.goods_number;
+        this.form.goods_volume = e.goods_volume;
+        this.form.transport_prices = e.transport_prices;
+        this.form.delivery_method = e.delivery_method;
+        this.form.pay_method = e.pay_method;
+        this.value_fhd = this.form.delivery_province + '/' + this.form.delivery_city + '/' + this.form.delivery_district
+        this.value_shd = this.form.receipt_province + '/' + this.form.receipt_city + '/' + this.form.receipt_district
       },
       formatArealist() {//处理JSON数据，符合element 级联组件数据格式
         let obj = this.arealist;
