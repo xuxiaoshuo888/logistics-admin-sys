@@ -1,4 +1,7 @@
-const target = 'http://129.204.106.247:12331';//测试地址
+// const target = 'http://129.204.106.247:12331';//测试地址
+const target = 'https://jytc.tech:12330 ';//正式地址
+
+
 module.exports = {
     // 基本路径
     publicPath: '/',

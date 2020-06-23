@@ -65,8 +65,8 @@
         data() {
             return {
                 form: {
-                    username: 'jytc_admin',
-                    password: 'jytcXxX2020'
+                    username: '',
+                    password: ''
                 },
                 form_regist: {
                     username: '',
@@ -82,6 +82,20 @@
                 提交账号密码，验证成功后，保存cookie相关身份信息在localstorage和store中，
                 然后跳转到主界面
                  */
+                if (!this.form.username) {
+                    this.$message({
+                        type: 'warning',
+                        message: '请输入用户名！'
+                    });
+                    return
+                }
+                if (!this.form.password) {
+                    this.$message({
+                        type: 'warning',
+                        message: '请输入密码！'
+                    });
+                    return
+                }
                 let data = {
                     admin_name: this.form.username,
                     password: this.form.password,

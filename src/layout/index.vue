@@ -482,6 +482,8 @@
                     receipt_province: this.receipt_province,//	根据收货省查询订单
                     receipt_city: this.receipt_city,//	根据收货市查询订单
                     receipt_district: this.receipt_district,//	根据收货区查询订单
+                    start:0,
+                    end:100
                 }
                 this.request.get('/admin/get/', {params: data}).then(res => {
                     if (res.data.ret == 0) {
