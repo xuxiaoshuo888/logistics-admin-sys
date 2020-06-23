@@ -23,13 +23,14 @@
                     <el-breadcrumb separator="/">
                         <el-breadcrumb-item>订单管理</el-breadcrumb-item>
                     </el-breadcrumb>
-                    <el-dropdown>
-                        <div style="cursor: pointer;">
-                            <el-avatar
+                    <el-dropdown @command="handleCommand">
+                        <div style="cursor: pointer;" class="portarit-div">
+                            管理员
+                            <el-avatar style="margin-left: 10px;"
                                     src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                         </div>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item icon="el-icon-setting" @click="logout">退出</el-dropdown-item>
+                        <el-dropdown-menu slot="dropdown"  >
+                            <el-dropdown-item icon="el-icon-setting" command="logout">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -210,6 +211,9 @@
                                 prop="furniture_category"
                                 label="家具类别"
                                 width="120">
+                            <template slot-scope="scope">
+                                {{JSON.parse(scope.row.furniture_category)}}
+                            </template>
                         </el-table-column>
                         <el-table-column
                                 prop="goods_number"
@@ -465,6 +469,11 @@
                     if (res.data.ret == 0) {
                         clearCookie('sessionid')
                         this.$router.push('/login')
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            message: res.data.data
+                        });
                     }
                 })
             },
@@ -482,8 +491,8 @@
                     receipt_province: this.receipt_province,//	根据收货省查询订单
                     receipt_city: this.receipt_city,//	根据收货市查询订单
                     receipt_district: this.receipt_district,//	根据收货区查询订单
-                    start:0,
-                    end:100
+                    start: 0,
+                    end: 100
                 }
                 this.request.get('/admin/get/', {params: data}).then(res => {
                     if (res.data.ret == 0) {
@@ -694,6 +703,11 @@
                         });
                     }
                 })
+            },
+            handleCommand(command){
+                if(command=='logout'){
+                    this.logout()
+                }
             }
         }
     }
@@ -736,5 +750,10 @@
     .fy-div {
         padding: 10px;
         text-align: center;
+    }
+    .portarit-div{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 </style>
