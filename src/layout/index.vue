@@ -74,7 +74,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-input
-                                    placeholder="请输入发货人手机"
+                                    placeholder="请输入发货人电话"
                                     v-model="consigner_phone"
                                     size="small"
                                     @input="search_condition_onchange"
@@ -116,7 +116,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-input
-                                    placeholder="请输入收货人手机"
+                                    placeholder="请输入收货人电话"
                                     v-model="consignee_phone"
                                     size="small"
                                     @input="search_condition_onchange"
