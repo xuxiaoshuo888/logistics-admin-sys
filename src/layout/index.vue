@@ -74,8 +74,8 @@
                         </el-col>
                         <el-col :span="6">
                             <el-input
-                                    placeholder="请输入收货人手机"
-                                    v-model="consignee_phone"
+                                    placeholder="请输入发货人手机"
+                                    v-model="consigner_phone"
                                     size="small"
                                     @input="search_condition_onchange"
                                     clearable>
@@ -116,8 +116,8 @@
                         </el-col>
                         <el-col :span="6">
                             <el-input
-                                    placeholder="发货人手机"
-                                    v-model="consigner_phone"
+                                    placeholder="请输入收货人手机"
+                                    v-model="consignee_phone"
                                     size="small"
                                     @input="search_condition_onchange"
                                     clearable>
@@ -395,7 +395,6 @@
                                                 v-model="value_shd"
                                                 :options="list"
                                                 @change="handleChange_shd"></el-cascader>
-                                        <!--                                        <el-input v-model="form.order_number"></el-input>-->
                                     </el-form-item>
                                     <el-form-item label="收货地址">
                                         <el-input type="text" v-model="form.receipt_address"></el-input>
@@ -727,15 +726,15 @@
                 this.delivery_province = e[0],// 发货省
                     this.delivery_city = e[1],//发货市
                     this.deliver_district = e[2]
-                this.start=0
-                this.end=10
+                this.start = 0
+                this.end = 10
             },
             search_shd(e) {//搜索收货地地区选择器 ,['省','市','区']
                 this.receipt_province = e[0],// 发货省
                     this.receipt_city = e[1],//发货市
                     this.receipt_district = e[2]
-                this.start=0
-                this.end=10
+                this.start = 0
+                this.end = 10
                 console.log(this.form)
             },
             change_jjpl(e) {//家具品类change回调
@@ -817,7 +816,9 @@
                 this.receipt_district = '';//	根据收货区查询订单
                 this.s_fhd = '';
                 this.s_shd = '';
-                // this.search();
+                this.start = 0
+                this.end = 10
+                this.search();
             },
             //分页相关方法
             handleSizeChange(val) {
@@ -833,9 +834,9 @@
                 this.start = this.pageSize * (this.currentPage1 - 1)
                 this.search();
             },
-            search_condition_onchange(e){
-                this.start=0
-                this.end=10
+            search_condition_onchange(e) {
+                this.start = 0
+                this.end = 10
             }
         }
     }
