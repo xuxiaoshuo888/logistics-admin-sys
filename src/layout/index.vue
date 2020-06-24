@@ -44,6 +44,7 @@
                         <el-col :span="6">
                             <el-input
                                     placeholder="请输入订单号"
+                                    @input="search_condition_onchange"
                                     v-model="order_number"
                                     size="small"
                                     clearable>
@@ -64,6 +65,7 @@
                                     v-model="gte"
                                     type="date"
                                     size="small"
+                                    @change="search_condition_onchange"
                                     clearable
                                     style="width: 100%;"
                                     value-format="yyyy/MM/dd"
@@ -75,14 +77,15 @@
                                     placeholder="请输入收货人手机"
                                     v-model="consignee_phone"
                                     size="small"
+                                    @input="search_condition_onchange"
                                     clearable>
                             </el-input>
                         </el-col>
                     </el-row>
                     <el-row :gutter="20">
                         <el-col :span="6">
-
                             <el-select v-model="order_state" placeholder="请选择订单状态" style="width: 100%;" size="small"
+                                       @change="search_condition_onchange"
                                        clearable>
                                 <el-option v-for="(item,index) in order_state_list" :label="item.name"
                                            :value="item.val" :key="index"></el-option>
@@ -105,6 +108,7 @@
                                     type="date"
                                     size="small"
                                     clearable
+                                    @change="search_condition_onchange"
                                     style="width: 100%;"
                                     value-format="yyyy/MM/dd"
                                     placeholder="按照该日期之前查询">
@@ -115,6 +119,7 @@
                                     placeholder="发货人手机"
                                     v-model="consigner_phone"
                                     size="small"
+                                    @input="search_condition_onchange"
                                     clearable>
                             </el-input>
                         </el-col>
@@ -524,10 +529,10 @@
                 value_shd: '',//收货地省市区
                 jjpl: [],
                 start: 0,//开始
-                end: 5,//结束
+                end: 10,//结束
                 currentPage1: 1,//当前页码
                 pageSize: 10,//每页数
-                pageSizeList: [5, 10, 15, 20]//页码选择列表
+                pageSizeList: [10, 20, 30]//页码选择列表
             }
         },
         mounted() {
@@ -722,11 +727,15 @@
                 this.delivery_province = e[0],// 发货省
                     this.delivery_city = e[1],//发货市
                     this.deliver_district = e[2]
+                this.start=0
+                this.end=10
             },
             search_shd(e) {//搜索收货地地区选择器 ,['省','市','区']
                 this.receipt_province = e[0],// 发货省
                     this.receipt_city = e[1],//发货市
                     this.receipt_district = e[2]
+                this.start=0
+                this.end=10
                 console.log(this.form)
             },
             change_jjpl(e) {//家具品类change回调
@@ -823,6 +832,10 @@
                 this.end = this.pageSize * this.currentPage1
                 this.start = this.pageSize * (this.currentPage1 - 1)
                 this.search();
+            },
+            search_condition_onchange(e){
+                this.start=0
+                this.end=10
             }
         }
     }
