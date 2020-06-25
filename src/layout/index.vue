@@ -85,8 +85,7 @@
                     <el-row :gutter="20">
                         <el-col :span="6">
                             <el-select v-model="order_state" placeholder="请选择订单状态" style="width: 100%;" size="small"
-                                       @change="search_condition_onchange"
-                                       clearable>
+                                       @change="search_condition_onchange" clearable>
                                 <el-option v-for="(item,index) in order_state_list" :label="item.name"
                                            :value="item.val" :key="index"></el-option>
                             </el-select>
@@ -578,6 +577,7 @@
                     start: this.start,
                     end: this.end
                 }
+                console.log('version:1.0.0')
                 this.request.get('/admin/get/', {params: data}).then(res => {
                     this.$loading().close()
                     if (res.data.ret == 0) {
@@ -726,15 +726,25 @@
                 this.delivery_province = e[0],// 发货省
                     this.delivery_city = e[1],//发货市
                     this.deliver_district = e[2]
+                // this.start = 0
+                // this.end = 10
+                // this.currentPage1 = 1//当前页码
+                // this.pageSize = 10//每页数
                 this.start = 0
-                this.end = 10
+                this.end = this.start + this.pageSize
+                this.currentPage1 = 1//当前页码
             },
             search_shd(e) {//搜索收货地地区选择器 ,['省','市','区']
                 this.receipt_province = e[0],// 发货省
                     this.receipt_city = e[1],//发货市
                     this.receipt_district = e[2]
+                // this.start = 0
+                // this.end = 10
+                // this.currentPage1 = 1//当前页码
+                // this.pageSize = 10//每页数
                 this.start = 0
-                this.end = 10
+                this.end = this.start + this.pageSize
+                this.currentPage1 = 1//当前页码
                 console.log(this.form)
             },
             change_jjpl(e) {//家具品类change回调
@@ -817,7 +827,8 @@
                 this.s_fhd = '';
                 this.s_shd = '';
                 this.start = 0
-                this.end = 10
+                this.end = this.start + this.pageSize
+                this.currentPage1 = 1//当前页码
                 this.search();
             },
             //分页相关方法
@@ -835,8 +846,14 @@
                 this.search();
             },
             search_condition_onchange(e) {
+                // this.start = 0
+                // this.end = 10
+                // this.currentPage1 = 1//当前页码
+                // this.pageSize = 10//每页数
+                // debugger
                 this.start = 0
-                this.end = 10
+                this.end = this.start + this.pageSize
+                this.currentPage1 = 1//当前页码
             }
         }
     }
