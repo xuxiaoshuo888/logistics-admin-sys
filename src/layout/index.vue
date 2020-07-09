@@ -128,6 +128,12 @@
                             <el-button type="primary" icon="el-icon-search" size="small" @click="search">查询</el-button>
                             <el-button type="success" icon="el-icon-refresh" size="small" @click="resetAll">重置
                             </el-button>
+                            <el-button type="success" icon="el-icon-refresh" size="small" @click="exportByConditions">
+                                按查询条件导出
+                            </el-button>
+                            <el-button type="success" icon="el-icon-refresh" size="small" @click="exportBySelected">
+                                导出选中项
+                            </el-button>
                         </el-col>
                     </el-row>
                 </div>
@@ -138,7 +144,15 @@
                             border
                             stripe
                             size="mini"
-                            style="width: 100%;">
+                            style="width: 100%;"
+                            @selection-change="handleSelectionChange">
+                        <el-table-column
+                                type="selection"
+                                width="55"
+                                align="center"
+                                fixed="left"
+                                header-align="center">
+                        </el-table-column>
                         <el-table-column
                                 align="center"
                                 header-align="center"
@@ -854,6 +868,21 @@
                 this.start = 0
                 this.end = this.start + this.pageSize
                 this.currentPage1 = 1//当前页码
+            },
+            exportByConditions() {//按条件导出
+
+            },
+            exportBySelected() {//按选中导出
+
+            },
+            handleSelectionChange(e) {
+                let orderNumberList=[];
+                if (e.length > 0) {//有选中项
+                    e.forEach(item => {
+                        orderNumberList.push(item.order_number)
+                    })
+                }
+                console.log(orderNumberList)
             }
         }
     }
