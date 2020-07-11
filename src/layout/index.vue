@@ -128,10 +128,10 @@
                             <el-button type="primary" icon="el-icon-search" size="small" @click="search">查询</el-button>
                             <el-button type="success" icon="el-icon-refresh" size="small" @click="resetAll">重置
                             </el-button>
-                            <el-button type="success" icon="el-icon-refresh" size="small" @click="exportByConditions">
+                            <el-button type="success" icon="el-icon-download" size="small" @click="exportByConditions">
                                 按查询条件导出
                             </el-button>
-                            <el-button type="success" icon="el-icon-refresh" size="small" @click="exportBySelected">
+                            <el-button type="success" icon="el-icon-download" size="small" @click="exportBySelected">
                                 导出选中项
                             </el-button>
                         </el-col>
@@ -466,6 +466,7 @@
     import arealist from './area'
     import {setCookie, getCookie, clearCookie} from '../utils/utils'
 
+    const fileDownload = require('js-file-download')
     export default {
         name: "layout",
         data() {
@@ -544,7 +545,8 @@
                 end: 10,//结束
                 currentPage1: 1,//当前页码
                 pageSize: 10,//每页数
-                pageSizeList: [10, 20, 30]//页码选择列表
+                pageSizeList: [10, 20, 30],//页码选择列表
+                orderNumberList: [],//选中列表订单数组
             }
         },
         mounted() {
@@ -873,16 +875,41 @@
 
             },
             exportBySelected() {//按选中导出
-
+                let list = this.orderNumberList;
+                if (list.length > 0) {
+                    let data = {"order_number": list}
+                    // this.$loading();
+                    this.request({
+                        method: 'GET',
+                        url: '/admin/exportbyordernumber/',
+                        params: {
+                            order_number: JSON.stringify(data)
+                        },
+                        responseType: 'arraybuffer'
+                    }).then(res => {
+                        console.log(res)
+                        let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
+                        let url = window.URL.createObjectURL(blob);
+                        window.location.href = url;
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '请至少选择一项！'
+                    });
+                }
             },
             handleSelectionChange(e) {
-                let orderNumberList=[];
+                let orderNumberList = [];
                 if (e.length > 0) {//有选中项
                     e.forEach(item => {
                         orderNumberList.push(item.order_number)
                     })
                 }
                 console.log(orderNumberList)
+                this.orderNumberList = orderNumberList;
             }
         }
     }
