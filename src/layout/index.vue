@@ -593,7 +593,6 @@
                     start: this.start,
                     end: this.end
                 }
-                console.log('version:1.0.0')
                 this.request.get('/admin/get/', {params: data}).then(res => {
                     this.$loading().close()
                     if (res.data.ret == 0) {
@@ -872,13 +871,43 @@
                 this.currentPage1 = 1//当前页码
             },
             exportByConditions() {//按条件导出
-
+                this.$loading();
+                let data = {
+                    order_number: this.order_number,//	根据订单号查询
+                    order_state: this.order_state,//	根据订单状态查询   1:已下单  2:已提货  3:已完成  4:已取消
+                    gte: this.gte,//	查询大于等于该日期的订单   格式:”2020/05/18”
+                    lte: this.lte,//	查询小于等于该日期的订单   格式同gte
+                    consigner_phone: this.consigner_phone,//	根据发货人手机查询订单
+                    delivery_province: this.delivery_province,//根据发货省查询订单
+                    delivery_city: this.delivery_city,//	根据发货市查询订单
+                    deliver_district: this.deliver_district,//根据发货区查询订单
+                    consignee_phone: this.consignee_phone,//	根据收货人手机查询订单
+                    receipt_province: this.receipt_province,//	根据收货省查询订单
+                    receipt_city: this.receipt_city,//	根据收货市查询订单
+                    receipt_district: this.receipt_district,//	根据收货区查询订单
+                    start: this.start,
+                    end: this.end
+                }
+                this.$loading();
+                this.request({
+                    method: 'GET',
+                    url: '/admin/export/',
+                    params: data,
+                    responseType: 'arraybuffer'
+                }).then(res => {
+                    this.$loading().close()
+                    let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
+                    let url = window.URL.createObjectURL(blob);
+                    window.location.href = url;
+                }).catch(err => {
+                    console.log(err)
+                })
             },
             exportBySelected() {//按选中导出
                 let list = this.orderNumberList;
                 if (list.length > 0) {
                     let data = {"order_number": list}
-                    // this.$loading();
+                    this.$loading();
                     this.request({
                         method: 'GET',
                         url: '/admin/exportbyordernumber/',
@@ -887,7 +916,7 @@
                         },
                         responseType: 'arraybuffer'
                     }).then(res => {
-                        console.log(res)
+                        this.$loading().close()
                         let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
                         let url = window.URL.createObjectURL(blob);
                         window.location.href = url;
